@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitHub托管的铝金属光泽3D轮播</title>
+    <title>GitHub铝金属3D轮播 - 已修复加载问题</title>
     <style>
         :root {
             --metal-primary: #e8e8e8;
@@ -13,6 +13,9 @@
             --metal-light: #f5f5f5;
             --aluminum-color: #cccccc;
             --oxidized-color: #a8a8a8;
+            --success-color: #4CAF50;
+            --error-color: #f44336;
+            --warning-color: #ff9800;
         }
         
         * {
@@ -37,86 +40,49 @@
         
         header {
             text-align: center;
-            margin-bottom: 40px;
-            padding: 35px;
+            margin-bottom: 30px;
+            padding: 30px;
             background: rgba(255, 255, 255, 0.03);
-            border-radius: 25px;
+            border-radius: 20px;
             backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 
-                0 20px 40px rgba(0, 0, 0, 0.6),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, 
-                transparent, 
-                rgba(200, 200, 200, 0.3), 
-                transparent
-            );
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
         }
         
         h1 {
-            font-size: 3.2rem;
-            margin-bottom: 15px;
-            background: linear-gradient(90deg, 
-                var(--metal-primary) 0%, 
-                var(--metal-secondary) 50%, 
-                var(--metal-primary) 100%
-            );
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, var(--aluminum-color), var(--metal-primary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 30px rgba(200, 200, 200, 0.2);
-            letter-spacing: 1px;
-            position: relative;
         }
         
-        h1::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 25%;
-            width: 50%;
-            height: 2px;
-            background: linear-gradient(90deg, 
-                transparent, 
-                var(--metal-primary), 
-                transparent
-            );
-        }
-        
-        .subtitle {
-            font-size: 1.3rem;
-            color: var(--metal-secondary);
-            max-width: 800px;
-            margin: 0 auto;
-            line-height: 1.7;
-            opacity: 0.9;
-        }
-        
-        .github-badge {
+        .status-indicator {
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 10px 20px;
-            border-radius: 30px;
-            margin-top: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            font-size: 0.95rem;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px 15px;
+            border-radius: 20px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+        
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--error-color);
+        }
+        
+        .status-dot.connected {
+            background: var(--success-color);
+            box-shadow: 0 0 10px var(--success-color);
         }
         
         .content-grid {
             display: grid;
-            grid-template-columns: 1fr 420px;
+            grid-template-columns: 1fr 400px;
             gap: 30px;
             margin-bottom: 40px;
         }
@@ -139,10 +105,8 @@
             height: 650px;
             border-radius: 20px;
             overflow: hidden;
-            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
-            box-shadow: 
-                0 25px 50px rgba(0, 0, 0, 0.7),
-                0 0 100px rgba(200, 200, 200, 0.05);
+            background: #1a1a1a;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.7);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
@@ -150,55 +114,24 @@
             width: 100%;
             height: 100%;
             --poster-color: transparent;
-            --progress-bar-color: rgba(200, 200, 200, 0.5);
-            --progress-bar-height: 3px;
-            --progress-mask: linear-gradient(
-                rgba(255, 255, 255, 0.1),
-                rgba(255, 255, 255, 0.1)
-            );
         }
         
         .model-info {
-            padding: 30px;
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.03) 0%,
-                rgba(255, 255, 255, 0.01) 100%
-            );
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(10px);
-        }
-        
-        .model-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         .model-title {
-            font-size: 2.2rem;
+            font-size: 2rem;
+            margin-bottom: 10px;
             color: var(--metal-light);
-            font-weight: 600;
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
-        }
-        
-        .model-index {
-            font-size: 1.1rem;
-            color: var(--metal-secondary);
-            background: rgba(0, 0, 0, 0.3);
-            padding: 8px 15px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         .model-description {
             color: var(--metal-secondary);
             font-size: 1.1rem;
-            line-height: 1.7;
-            opacity: 0.9;
         }
         
         .carousel-controls {
@@ -206,22 +139,16 @@
             justify-content: center;
             align-items: center;
             gap: 30px;
-            padding: 30px;
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.03) 0%,
-                rgba(255, 255, 255, 0.01) 100%
-            );
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 25px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         .metal-btn {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.08) 0%,
-                rgba(255, 255, 255, 0.03) 100%
-            );
+            background: linear-gradient(135deg, #333, #555);
             color: var(--metal-secondary);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             width: 70px;
             height: 70px;
             border-radius: 50%;
@@ -231,52 +158,20 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .metal-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, 
-                transparent, 
-                rgba(255, 255, 255, 0.1), 
-                transparent
-            );
-            transition: left 0.5s ease;
         }
         
         .metal-btn:hover {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.12) 0%,
-                rgba(255, 255, 255, 0.06) 100%
-            );
+            background: linear-gradient(135deg, #444, #666);
             transform: scale(1.1);
             color: var(--metal-light);
-            box-shadow: 
-                0 10px 25px rgba(0, 0, 0, 0.3),
-                0 0 20px rgba(200, 200, 200, 0.1);
-        }
-        
-        .metal-btn:hover::before {
-            left: 100%;
         }
         
         .play-pause-btn {
-            width: 85px;
-            height: 85px;
-            font-size: 2.3rem;
-            background: linear-gradient(135deg, 
-                var(--aluminum-color) 0%,
-                var(--oxidized-color) 100%
-            );
+            width: 80px;
+            height: 80px;
+            font-size: 2.2rem;
+            background: linear-gradient(135deg, var(--aluminum-color), var(--oxidized-color));
             color: #1a1a1a;
-            border: none;
-            box-shadow: 0 10px 30px rgba(200, 200, 200, 0.2);
         }
         
         .control-sidebar {
@@ -285,111 +180,96 @@
             gap: 25px;
         }
         
-        .control-panel {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.03) 0%,
-                rgba(255, 255, 255, 0.01) 100%
-            );
-            border-radius: 20px;
-            padding: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(10px);
+        .config-panel {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         .panel-title {
-            font-size: 1.5rem;
-            margin-bottom: 25px;
+            font-size: 1.4rem;
+            margin-bottom: 20px;
             color: var(--metal-primary);
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            gap: 10px;
         }
         
-        .panel-title .icon {
-            color: var(--aluminum-color);
-            font-size: 1.8rem;
+        .github-config {
+            margin-bottom: 25px;
+        }
+        
+        .config-input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: var(--metal-light);
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+        
+        .config-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--aluminum-color), var(--oxidized-color));
+            color: #1a1a1a;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .config-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
         }
         
         .material-controls {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: 1fr 1fr;
             gap: 15px;
             margin-bottom: 25px;
         }
         
         .material-btn {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.05) 0%,
-                rgba(255, 255, 255, 0.02) 100%
-            );
+            background: rgba(255, 255, 255, 0.05);
             color: var(--metal-secondary);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 18px 15px;
-            border-radius: 15px;
+            padding: 15px;
+            border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
             text-align: center;
-            font-size: 1rem;
-            font-weight: 500;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
         }
         
         .material-btn:hover {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.08) 0%,
-                rgba(255, 255, 255, 0.04) 100%
-            );
-            color: var(--metal-light);
-            border-color: rgba(255, 255, 255, 0.2);
-            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 0.1);
         }
         
         .material-btn.active {
-            background: linear-gradient(135deg, 
-                var(--aluminum-color) 0%,
-                var(--oxidized-color) 100%
-            );
+            background: linear-gradient(135deg, var(--aluminum-color), var(--oxidized-color));
             color: #1a1a1a;
-            border-color: var(--metal-primary);
-            box-shadow: 0 5px 20px rgba(200, 200, 200, 0.2);
-        }
-        
-        .material-icon {
-            font-size: 1.8rem;
-            opacity: 0.9;
         }
         
         .slider-group {
-            margin-bottom: 25px;
-        }
-        
-        .slider-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
         
         .slider-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
             color: var(--metal-secondary);
-            font-size: 1.1rem;
         }
         
         .slider-value {
             color: var(--metal-primary);
             font-weight: 600;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 6px 12px;
-            border-radius: 15px;
-            min-width: 60px;
-            text-align: center;
-            font-family: 'Courier New', monospace;
-            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         .slider {
@@ -397,67 +277,35 @@
             height: 8px;
             -webkit-appearance: none;
             appearance: none;
-            background: linear-gradient(90deg, 
-                rgba(255, 255, 255, 0.1) 0%,
-                rgba(255, 255, 255, 0.2) 100%
-            );
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 4px;
             outline: none;
-            cursor: pointer;
         }
         
         .slider::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 26px;
-            height: 26px;
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
-            background: linear-gradient(135deg, 
-                var(--metal-primary) 0%,
-                var(--metal-secondary) 100%
-            );
+            background: linear-gradient(135deg, var(--aluminum-color), var(--oxidized-color));
             cursor: pointer;
-            box-shadow: 
-                0 0 15px rgba(200, 200, 200, 0.5),
-                0 0 30px rgba(200, 200, 200, 0.3);
-            border: 2px solid #1a1a1a;
         }
         
         .model-list-container {
             flex: 1;
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.03) 0%,
-                rgba(255, 255, 255, 0.01) 100%
-            );
-            border-radius: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         .model-list-header {
-            padding: 25px;
+            padding: 20px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-        
-        .model-list-title {
-            font-size: 1.4rem;
-            color: var(--metal-primary);
-        }
-        
-        .model-count {
-            background: linear-gradient(135deg, 
-                var(--aluminum-color) 0%,
-                var(--oxidized-color) 100%
-            );
-            color: #1a1a1a;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.95rem;
         }
         
         .model-list {
@@ -467,136 +315,31 @@
         }
         
         .model-list-item {
-            padding: 20px;
+            padding: 18px;
             margin-bottom: 12px;
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.03) 0%,
-                rgba(255, 255, 255, 0.01) 100%
-            );
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
         
         .model-list-item:hover {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.06) 0%,
-                rgba(255, 255, 255, 0.03) 100%
-            );
+            background: rgba(255, 255, 255, 0.1);
             transform: translateX(5px);
-            border-color: rgba(255, 255, 255, 0.15);
         }
         
         .model-list-item.active {
-            background: linear-gradient(135deg, 
-                rgba(200, 200, 200, 0.15) 0%,
-                rgba(200, 200, 200, 0.08) 100%
-            );
+            background: rgba(255, 255, 255, 0.15);
             border-color: var(--aluminum-color);
-            box-shadow: 0 5px 20px rgba(200, 200, 200, 0.1);
         }
         
         .model-icon {
-            font-size: 2rem;
+            font-size: 1.8rem;
             color: var(--aluminum-color);
-            opacity: 0.9;
-        }
-        
-        .model-list-info {
-            flex: 1;
-        }
-        
-        .model-list-name {
-            font-weight: 600;
-            color: var(--metal-light);
-            margin-bottom: 5px;
-            font-size: 1.1rem;
-        }
-        
-        .model-list-desc {
-            font-size: 0.95rem;
-            color: var(--metal-secondary);
-            line-height: 1.5;
-            opacity: 0.8;
-        }
-        
-        .duration-control {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.03) 0%,
-                rgba(255, 255, 255, 0.01) 100%
-            );
-            border-radius: 20px;
-            padding: 30px;
-            margin-top: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(10px);
-        }
-        
-        .duration-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-        
-        .duration-title {
-            font-size: 1.5rem;
-            color: var(--metal-primary);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .duration-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--aluminum-color);
-            text-shadow: 0 0 20px rgba(200, 200, 200, 0.3);
-            font-family: 'Courier New', monospace;
-        }
-        
-        .duration-presets {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-            margin-top: 20px;
-        }
-        
-        .preset-btn {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.05) 0%,
-                rgba(255, 255, 255, 0.02) 100%
-            );
-            color: var(--metal-secondary);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 12px 5px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-            font-size: 0.95rem;
-        }
-        
-        .preset-btn:hover {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.08) 0%,
-                rgba(255, 255, 255, 0.04) 100%
-            );
-            color: var(--metal-light);
-        }
-        
-        .preset-btn.active {
-            background: linear-gradient(135deg, 
-                var(--aluminum-color) 0%,
-                var(--oxidized-color) 100%
-            );
-            color: #1a1a1a;
-            border-color: var(--metal-primary);
-            box-shadow: 0 5px 15px rgba(200, 200, 200, 0.2);
         }
         
         .loading-overlay {
@@ -605,90 +348,43 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(135deg, 
-                rgba(26, 26, 26, 0.95) 0%,
-                rgba(10, 10, 10, 0.95) 100%
-            );
+            background: rgba(26, 26, 26, 0.95);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 100;
-            transition: opacity 0.5s ease;
         }
         
-        .metal-loader {
-            width: 100px;
-            height: 100px;
-            position: relative;
-            margin-bottom: 30px;
-        }
-        
-        .metal-loader-inner {
-            width: 100%;
-            height: 100%;
-            border: 8px solid transparent;
-            border-top: 8px solid var(--aluminum-color);
-            border-right: 8px solid var(--oxidized-color);
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--aluminum-color);
             border-radius: 50%;
-            animation: metalSpin 2s linear infinite;
+            animation: spin 1s linear infinite;
+            margin-bottom: 25px;
         }
         
-        @keyframes metalSpin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .github-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.05) 0%,
-                rgba(255, 255, 255, 0.02) 100%
-            );
-            color: var(--metal-secondary);
-            padding: 15px 25px;
-            border-radius: 15px;
-            text-decoration: none;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
-            margin-top: 30px;
-            font-weight: 500;
-        }
-        
-        .github-link:hover {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.08) 0%,
-                rgba(255, 255, 255, 0.04) 100%
-            );
-            color: var(--metal-light);
-            transform: translateY(-3px);
-            border-color: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
         
         .toast {
             position: fixed;
             bottom: 30px;
             right: 30px;
-            background: linear-gradient(135deg, 
-                var(--aluminum-color) 0%,
-                var(--oxidized-color) 100%
-            );
+            background: linear-gradient(135deg, var(--aluminum-color), var(--oxidized-color));
             color: #1a1a1a;
             padding: 20px 30px;
-            border-radius: 15px;
-            box-shadow: 
-                0 15px 35px rgba(0, 0, 0, 0.4),
-                0 0 30px rgba(200, 200, 200, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
             transform: translateY(100px);
             opacity: 0;
-            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            transition: all 0.4s ease;
             z-index: 1000;
             max-width: 400px;
             font-weight: 600;
-            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
         .toast.show {
@@ -696,77 +392,58 @@
             opacity: 1;
         }
         
-        .status-bar {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.03) 0%,
-                rgba(255, 255, 255, 0.01) 100%
-            );
+        .toast.error {
+            background: linear-gradient(135deg, #f44336, #ff6b6b);
+            color: white;
+        }
+        
+        .toast.success {
+            background: linear-gradient(135deg, #4CAF50, #66BB6A);
+            color: white;
+        }
+        
+        .debug-panel {
+            background: rgba(0, 0, 0, 0.5);
             border-radius: 15px;
-            padding: 20px 30px;
-            margin-top: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.95rem;
-        }
-        
-        .status-info {
-            display: flex;
-            align-items: center;
-            gap: 30px;
-        }
-        
-        .status-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .status-label {
-            color: var(--metal-secondary);
-        }
-        
-        .status-value {
-            color: var(--metal-primary);
-            font-weight: 600;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 5px 12px;
-            border-radius: 12px;
+            padding: 20px;
+            margin-top: 30px;
             border: 1px solid rgba(255, 255, 255, 0.1);
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            max-height: 200px;
+            overflow-y: auto;
         }
         
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2.5rem;
-            }
-            
-            .carousel-container {
-                height: 400px;
-            }
-            
-            .material-controls {
-                grid-template-columns: 1fr;
-            }
-            
-            .duration-presets {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .model-list {
-                height: 300px;
-            }
+        .debug-title {
+            color: var(--warning-color);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .debug-log {
+            color: var(--metal-secondary);
+            line-height: 1.5;
+        }
+        
+        .debug-success {
+            color: var(--success-color);
+        }
+        
+        .debug-error {
+            color: var(--error-color);
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>GitHub铝金属光泽3D轮播</h1>
-            <p class="subtitle">直接从GitHub加载GLB模型，应用PBR铝金属材质，支持自定义金属光泽和氧化效果</p>
-            
-            <div class="github-badge">
-                <span>🚀 GitHub托管 | ⚡ 实时渲染 | 🎨 PBR材质 | 🔄 自动轮播</span>
+            <h1>GitHub铝金属3D轮播 - 修复版</h1>
+            <p>解决GitHub GLB模型加载问题的完整方案</p>
+            <div class="status-indicator">
+                <div class="status-dot" id="status-dot"></div>
+                <span id="status-text">等待配置GitHub仓库</span>
             </div>
         </header>
         
@@ -774,13 +451,12 @@
             <div class="viewer-section">
                 <div class="carousel-container">
                     <div class="loading-overlay" id="loading-overlay">
-                        <div class="metal-loader">
-                            <div class="metal-loader-inner"></div>
-                        </div>
-                        <div id="loading-text" style="color: var(--metal-secondary); font-size: 1.3rem; text-align: center; max-width: 500px;">
-                            正在从GitHub加载铝金属模型...
-                            <br>
-                            <small style="opacity: 0.7; font-size: 1rem;">首次加载可能需要几秒钟</small>
+                        <div class="spinner"></div>
+                        <div id="loading-text" style="color: var(--metal-secondary); text-align: center;">
+                            <div style="margin-bottom: 10px;">等待配置GitHub仓库</div>
+                            <div style="font-size: 0.9rem; opacity: 0.8;">
+                                请在右侧配置您的GitHub仓库信息
+                            </div>
                         </div>
                     </div>
                     <model-viewer 
@@ -788,163 +464,158 @@
                         camera-controls
                         auto-rotate
                         autoplay
-                        shadow-intensity="1.5"
-                        exposure="1.2"
-                        environment-image="https://modelviewer.dev/shared-assets/environments/spruit_sunrise_1k_HDR.hdr"
-                        skybox-image="https://modelviewer.dev/shared-assets/environments/spruit_sunrise_1k_HDR.hdr"
+                        shadow-intensity="1.2"
+                        exposure="1.0"
+                        environment-image="neutral"
                         style="width:100%;height:100%">
                     </model-viewer>
                 </div>
                 
                 <div class="model-info">
-                    <div class="model-header">
-                        <div class="model-title" id="model-title">铝金属模型展示</div>
-                        <div class="model-index" id="model-index">0 / 0</div>
-                    </div>
+                    <div class="model-title" id="model-title">GitHub铝金属模型展示</div>
                     <div class="model-description" id="model-description">
-                        选择左侧材质或调整下方参数来改变铝金属的光泽和氧化效果
+                        配置右侧的GitHub仓库信息以加载模型
                     </div>
                 </div>
                 
                 <div class="carousel-controls">
-                    <button class="metal-btn" id="prev-btn" title="上一个模型 (左箭头)">
+                    <button class="metal-btn" id="prev-btn" disabled>
                         ◀
                     </button>
-                    <button class="metal-btn play-pause-btn" id="toggle-play" title="播放/暂停轮播 (空格键)">
-                        <span id="play-icon">⏸</span>
+                    <button class="metal-btn play-pause-btn" id="toggle-play" disabled>
+                        <span id="play-icon">▶</span>
                     </button>
-                    <button class="metal-btn" id="next-btn" title="下一个模型 (右箭头)">
+                    <button class="metal-btn" id="next-btn" disabled>
                         ▶
                     </button>
+                </div>
+                
+                <div class="debug-panel">
+                    <div class="debug-title">
+                        <span>🔧 加载状态调试</span>
+                    </div>
+                    <div class="debug-log" id="debug-log">
+                        <div class="debug-success">✓ 页面加载完成</div>
+                        <div class="debug-error">✗ 等待GitHub配置</div>
+                    </div>
                 </div>
             </div>
             
             <div class="control-sidebar">
-                <div class="control-panel">
+                <div class="config-panel">
                     <div class="panel-title">
-                        <span class="icon">🔩</span>
-                        <span>铝金属材质</span>
+                        <span>⚙️ GitHub配置</span>
+                    </div>
+                    
+                    <div class="github-config">
+                        <div style="margin-bottom: 15px; color: var(--metal-secondary); font-size: 0.9rem;">
+                            请填写您的GitHub仓库信息：
+                        </div>
+                        
+                        <input type="text" 
+                               class="config-input" 
+                               id="github-user"
+                               placeholder="GitHub用户名 (例如: yourusername)"
+                               value="yourusername">
+                        
+                        <input type="text" 
+                               class="config-input" 
+                               id="github-repo"
+                               placeholder="仓库名 (例如: 3d-models)"
+                               value="3d-models">
+                        
+                        <input type="text" 
+                               class="config-input" 
+                               id="github-branch"
+                               placeholder="分支名 (默认: main)"
+                               value="main">
+                        
+                        <input type="text" 
+                               class="config-input" 
+                               id="models-folder"
+                               placeholder="模型文件夹路径 (默认: models/)"
+                               value="models/">
+                        
+                        <button class="config-btn" id="load-github-btn">
+                            从GitHub加载模型
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="config-panel">
+                    <div class="panel-title">
+                        <span>🔩 铝金属材质</span>
                     </div>
                     
                     <div class="material-controls">
-                        <button class="material-btn active" id="aluminum-btn" data-material="aluminum">
-                            <span class="material-icon">✨</span>
-                            <span>纯铝</span>
+                        <button class="material-btn active" id="aluminum-btn" disabled>
+                            纯铝
                         </button>
-                        <button class="material-btn" id="oxidized-btn" data-material="oxidized">
-                            <span class="material-icon">🌫</span>
-                            <span>氧化铝</span>
+                        <button class="material-btn" id="oxidized-btn" disabled>
+                            氧化铝
                         </button>
-                        <button class="material-btn" id="anodized-btn" data-material="anodized">
-                            <span class="material-icon">🌈</span>
-                            <span>阳极氧化</span>
+                        <button class="material-btn" id="anodized-btn" disabled>
+                            阳极氧化
                         </button>
-                        <button class="material-btn" id="brushed-btn" data-material="brushed">
-                            <span class="material-icon">🌀</span>
-                            <span>拉丝铝</span>
+                        <button class="material-btn" id="brushed-btn" disabled>
+                            拉丝铝
                         </button>
                     </div>
                     
                     <div class="slider-group">
-                        <div class="slider-header">
-                            <div class="slider-label">金属度</div>
-                            <div class="slider-value" id="metallic-value">0.95</div>
+                        <div class="slider-label">
+                            <span>金属度</span>
+                            <span class="slider-value" id="metallic-value">0.95</span>
                         </div>
-                        <input type="range" min="0" max="1" step="0.01" value="0.95" class="slider" id="metallic-slider">
+                        <input type="range" min="0" max="1" step="0.01" value="0.95" class="slider" id="metallic-slider" disabled>
                     </div>
                     
                     <div class="slider-group">
-                        <div class="slider-header">
-                            <div class="slider-label">粗糙度</div>
-                            <div class="slider-value" id="roughness-value">0.15</div>
+                        <div class="slider-label">
+                            <span>粗糙度</span>
+                            <span class="slider-value" id="roughness-value">0.15</span>
                         </div>
-                        <input type="range" min="0" max="1" step="0.01" value="0.15" class="slider" id="roughness-slider">
+                        <input type="range" min="0" max="1" step="0.01" value="0.15" class="slider" id="roughness-slider" disabled>
+                    </div>
+                </div>
+                
+                <div class="config-panel">
+                    <div class="panel-title">
+                        <span>⏱ 轮播控制</span>
                     </div>
                     
                     <div class="slider-group">
-                        <div class="slider-header">
-                            <div class="slider-label">氧化程度</div>
-                            <div class="slider-value" id="oxidation-value">0.0</div>
+                        <div class="slider-label">
+                            <span>轮播间隔</span>
+                            <span class="slider-value" id="duration-value">10秒</span>
                         </div>
-                        <input type="range" min="0" max="1" step="0.01" value="0.0" class="slider" id="oxidation-slider">
+                        <input type="range" min="3" max="60" value="10" class="slider" id="duration-slider" disabled>
                     </div>
                 </div>
                 
                 <div class="model-list-container">
                     <div class="model-list-header">
-                        <div class="model-list-title">GitHub模型库</div>
-                        <div class="model-count" id="model-count">0 个模型</div>
+                        <div style="font-weight: 600;">模型列表</div>
+                        <div style="color: var(--metal-secondary);" id="model-count">0 个模型</div>
                     </div>
                     
                     <div class="model-list" id="model-list">
-                        <!-- 模型列表将在这里动态生成 -->
                         <div class="model-list-item">
                             <div class="model-icon">📦</div>
-                            <div class="model-list-info">
-                                <div class="model-list-name">正在加载模型...</div>
-                                <div class="model-list-desc">请稍候</div>
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600;">等待加载模型</div>
+                                <div style="font-size: 0.9rem; color: var(--metal-secondary);">
+                                    请先配置GitHub仓库
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                
-                <div class="duration-control">
-                    <div class="duration-header">
-                        <div class="duration-title">
-                            <span class="icon">⏱</span>
-                            <span>轮播控制</span>
-                        </div>
-                        <div class="duration-value" id="duration-value">10s</div>
-                    </div>
-                    
-                    <div class="slider-group">
-                        <div class="slider-header">
-                            <div class="slider-label">轮播间隔</div>
-                            <div class="slider-value" id="duration-display">10秒</div>
-                        </div>
-                        <input type="range" min="3" max="60" value="10" class="slider" id="duration-slider">
-                    </div>
-                    
-                    <div class="duration-presets">
-                        <button class="preset-btn active" data-duration="5">5秒</button>
-                        <button class="preset-btn" data-duration="10">10秒</button>
-                        <button class="preset-btn" data-duration="15">15秒</button>
-                        <button class="preset-btn" data-duration="30">30秒</button>
-                    </div>
-                </div>
-                
-                <a href="https://github.com" target="_blank" class="github-link">
-                    <span>访问GitHub仓库</span>
-                    <span>→</span>
-                </a>
             </div>
-        </div>
-        
-        <div class="status-bar">
-            <div class="status-info">
-                <div class="status-item">
-                    <span class="status-label">当前材质:</span>
-                    <span class="status-value" id="current-material">纯铝</span>
-                </div>
-                <div class="status-item">
-                    <span class="status-label">轮播状态:</span>
-                    <span class="status-value" id="play-status">播放中</span>
-                </div>
-                <div class="status-item">
-                    <span class="status-label">数据源:</span>
-                    <span class="status-value">GitHub</span>
-                </div>
-            </div>
-            <div id="folder-stats">等待加载模型数据...</div>
         </div>
     </div>
     
-    <div class="toast" id="toast">铝金属光泽渲染器已就绪</div>
-    
-    <!-- 配置文件示例链接 -->
-    <div id="config-example" style="display: none;">
-        <!-- 这里放置配置示例 -->
-    </div>
+    <div class="toast" id="toast">GitHub铝金属3D轮播已加载</div>
     
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
     <script>
@@ -954,90 +625,60 @@
                 name: "纯铝",
                 metallic: 0.95,
                 roughness: 0.15,
-                baseColor: "#E8E8E8",
-                emissiveFactor: [0.02, 0.02, 0.02],
-                emissiveStrength: 1.0,
-                clearcoat: 0.3,
-                clearcoatRoughness: 0.1
+                baseColor: "#E8E8E8"
             },
             oxidized: {
                 name: "氧化铝",
                 metallic: 0.85,
                 roughness: 0.45,
-                baseColor: "#C8C8C8",
-                emissiveFactor: [0.05, 0.05, 0.05],
-                emissiveStrength: 1.1,
-                clearcoat: 0.5,
-                clearcoatRoughness: 0.3
+                baseColor: "#C8C8C8"
             },
             anodized: {
                 name: "阳极氧化铝",
                 metallic: 0.75,
                 roughness: 0.35,
-                baseColor: "#3A6EA5",
-                emissiveFactor: [0.02, 0.02, 0.05],
-                emissiveStrength: 1.2,
-                clearcoat: 0.8,
-                clearcoatRoughness: 0.2
+                baseColor: "#3A6EA5"
             },
             brushed: {
                 name: "拉丝铝",
-                metallic: 0.9,
+                metallic: 0.90,
                 roughness: 0.25,
-                baseColor: "#D0D0D0",
-                emissiveFactor: [0.03, 0.03, 0.03],
-                emissiveStrength: 1.0,
-                clearcoat: 0.4,
-                clearcoatRoughness: 0.15
+                baseColor: "#D0D0D0"
             }
         };
 
-        // GitHub仓库配置 - 请替换为您的实际仓库信息
-        const GITHUB_CONFIG = {
-            // 示例：GitHub原始文件URL (Raw URL)
-            owner: "Wellingguu",
-            repo: "zzly3D",
-            branch: "3Dmodel",
-            
-            // 或者直接使用完整的raw URL
-            modelsJsonUrl: "https://raw.githubusercontent.com/Wellingguu/zzly3D/3Dmodel/models.json",
-            
-            // 备用配置源（防止主配置源不可用）
-            fallbackModels: [
-                {
-                    name: "铝制零件示例",
-                    description: "工业铝制零件模型",
-                    url: "https://raw.githubusercontent.com/your-username/3d-models-repo/main/models/aluminum_part.glb",
-                    thumbnail: "🔩",
-                    size: "2.1 MB",
-                    category: "industrial"
-                },
-                {
-                    name: "铝框架结构",
-                    description: "建筑铝框架模型",
-                    url: "https://raw.githubusercontent.com/your-username/3d-models-repo/main/models/aluminum_frame.glb",
-                    thumbnail: "🏗️",
-                    size: "3.4 MB",
-                    category: "architecture"
-                }
-            ]
-        };
+        // CORS代理服务器列表（备用方案）
+        const CORS_PROXIES = [
+            'https://corsproxy.io/?',
+            'https://api.allorigins.win/raw?url=',
+            'https://thingproxy.freeboard.io/fetch/'
+        ];
 
         document.addEventListener('DOMContentLoaded', function() {
             // 获取DOM元素
             const modelViewer = document.getElementById('model-viewer');
             const loadingOverlay = document.getElementById('loading-overlay');
             const loadingText = document.getElementById('loading-text');
+            const statusDot = document.getElementById('status-dot');
+            const statusText = document.getElementById('status-text');
+            const debugLog = document.getElementById('debug-log');
+            
+            // 配置输入元素
+            const githubUserInput = document.getElementById('github-user');
+            const githubRepoInput = document.getElementById('github-repo');
+            const githubBranchInput = document.getElementById('github-branch');
+            const modelsFolderInput = document.getElementById('models-folder');
+            const loadGithubBtn = document.getElementById('load-github-btn');
+            
+            // 控制元素
             const prevBtn = document.getElementById('prev-btn');
             const nextBtn = document.getElementById('next-btn');
             const togglePlayBtn = document.getElementById('toggle-play');
             const playIcon = document.getElementById('play-icon');
             const modelTitle = document.getElementById('model-title');
-            const modelIndex = document.getElementById('model-index');
             const modelDescription = document.getElementById('model-description');
             const modelCount = document.getElementById('model-count');
             const modelList = document.getElementById('model-list');
-            const folderStats = document.getElementById('folder-stats');
             const toast = document.getElementById('toast');
             
             // 材质控制元素
@@ -1046,183 +687,311 @@
             const metallicValue = document.getElementById('metallic-value');
             const roughnessSlider = document.getElementById('roughness-slider');
             const roughnessValue = document.getElementById('roughness-value');
-            const oxidationSlider = document.getElementById('oxidation-slider');
-            const oxidationValue = document.getElementById('oxidation-value');
-            const currentMaterialDisplay = document.getElementById('current-material');
-            
-            // 轮播控制元素
             const durationSlider = document.getElementById('duration-slider');
-            const durationDisplay = document.getElementById('duration-display');
             const durationValue = document.getElementById('duration-value');
-            const presetButtons = document.querySelectorAll('.preset-btn');
-            const playStatus = document.getElementById('play-status');
             
             // 程序状态
             let models = [];
             let currentIndex = 0;
-            let isPlaying = true;
+            let isPlaying = false;
             let playInterval = null;
             let currentMaterial = 'aluminum';
             let carouselDuration = 10;
-            let isLoading = false;
+            let currentProxyIndex = 0;
             
-            // 显示提示消息
-            function showToast(message) {
-                toast.textContent = message;
-                toast.classList.add('show');
+            // 添加调试信息
+            function addDebugLog(message, type = 'info') {
+                const time = new Date().toLocaleTimeString();
+                const logEntry = document.createElement('div');
+                logEntry.innerHTML = `<span style="color: #666;">[${time}]</span> ${message}`;
+                logEntry.className = `debug-${type}`;
+                debugLog.appendChild(logEntry);
+                debugLog.scrollTop = debugLog.scrollHeight;
                 
-                setTimeout(() => {
-                    toast.classList.remove('show');
-                }, 3000);
-            }
-            
-            // 更新材质显示
-            function updateMaterialDisplay() {
-                const material = ALUMINUM_MATERIALS[currentMaterial];
-                currentMaterialDisplay.textContent = material.name;
-                
-                // 更新按钮状态
-                materialButtons.forEach(btn => {
-                    btn.classList.toggle('active', btn.dataset.material === currentMaterial);
-                });
-                
-                // 更新滑块值
-                metallicSlider.value = material.metallic;
-                roughnessSlider.value = material.roughness;
-                oxidationSlider.value = 0; // 重置氧化程度
-                
-                metallicValue.textContent = material.metallic.toFixed(2);
-                roughnessValue.textContent = material.roughness.toFixed(2);
-                oxidationValue.textContent = '0.00';
-                
-                // 应用材质
-                applyAluminumMaterial();
-                
-                showToast(`已切换至${material.name}材质`);
-            }
-            
-            // 应用铝金属材质
-            function applyAluminumMaterial() {
-                if (!modelViewer.model || isLoading) return;
-                
-                const materialConfig = ALUMINUM_MATERIALS[currentMaterial];
-                const oxidation = parseFloat(oxidationSlider.value);
-                
-                try {
-                    // 计算氧化效果对材质的影响
-                    const adjustedMetallic = materialConfig.metallic * (1 - oxidation * 0.4);
-                    const adjustedRoughness = materialConfig.roughness + (oxidation * 0.3);
-                    
-                    // 创建新的材质配置
-                    const materialData = {
-                        pbrMetallicRoughness: {
-                            baseColorFactor: materialConfig.baseColor,
-                            metallicFactor: adjustedMetallic,
-                            roughnessFactor: adjustedRoughness
-                        },
-                        emissiveFactor: materialConfig.emissiveFactor,
-                        emissiveStrength: materialConfig.emissiveStrength * (1 + oxidation * 0.3),
-                        doubleSided: true
-                    };
-                    
-                    // 如果有clearcoat属性，添加它
-                    if (materialConfig.clearcoat !== undefined) {
-                        materialData.extensions = {
-                            KHR_materials_clearcoat: {
-                                clearcoatFactor: materialConfig.clearcoat,
-                                clearcoatRoughnessFactor: materialConfig.clearcoatRoughness
-                            }
-                        };
-                    }
-                    
-                    // 尝试设置材质
-                    if (modelViewer.model && modelViewer.model.materials) {
-                        const materials = modelViewer.model.materials;
-                        
-                        for (let i = 0; i < materials.length; i++) {
-                            const mat = materials[i];
-                            
-                            // 设置基础材质属性
-                            mat.pbrMetallicRoughness.setBaseColorFactor(materialConfig.baseColor);
-                            mat.pbrMetallicRoughness.setMetallicFactor(adjustedMetallic);
-                            mat.pbrMetallicRoughness.setRoughnessFactor(adjustedRoughness);
-                            
-                            // 设置自发光
-                            mat.setEmissiveFactor(materialConfig.emissiveFactor);
-                            mat.setEmissiveStrength(materialConfig.emissiveStrength * (1 + oxidation * 0.3));
-                            
-                            // 更新显示值
-                            metallicValue.textContent = adjustedMetallic.toFixed(2);
-                            roughnessValue.textContent = adjustedRoughness.toFixed(2);
-                        }
-                    }
-                } catch (error) {
-                    console.warn('材质应用失败，使用备用方法:', error);
-                    // 使用CSS自定义属性作为备用
-                    modelViewer.style.setProperty('--material-color', materialConfig.baseColor);
+                // 限制日志数量
+                if (debugLog.children.length > 20) {
+                    debugLog.removeChild(debugLog.firstChild);
                 }
             }
             
-            // 从GitHub加载模型配置
-            async function loadModelsFromGitHub() {
+            // 显示提示消息
+            function showToast(message, type = 'info') {
+                toast.textContent = message;
+                toast.className = `toast ${type} show`;
+                
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 4000);
+            }
+            
+            // 更新状态指示器
+            function updateStatus(status, message) {
+                statusDot.className = 'status-dot';
+                if (status === 'connected') {
+                    statusDot.classList.add('connected');
+                    statusText.textContent = `✓ ${message}`;
+                } else if (status === 'error') {
+                    statusText.textContent = `✗ ${message}`;
+                } else {
+                    statusText.textContent = message;
+                }
+            }
+            
+            // 启用/禁用控制
+            function enableControls(enabled) {
+                const controls = [prevBtn, nextBtn, togglePlayBtn, ...materialButtons, 
+                                metallicSlider, roughnessSlider, durationSlider];
+                
+                controls.forEach(control => {
+                    control.disabled = !enabled;
+                });
+                
+                if (enabled) {
+                    addDebugLog('✓ 控制功能已启用', 'success');
+                }
+            }
+            
+            // 尝试通过不同方法获取GitHub文件
+            async function fetchGitHubFile(url) {
+                let lastError;
+                
+                // 方法1：直接访问
                 try {
-                    loadingText.textContent = '正在从GitHub加载模型配置...';
-                    loadingOverlay.style.display = 'flex';
+                    addDebugLog(`尝试直接访问: ${url}`);
+                    const response = await fetch(url);
+                    if (response.ok) {
+                        addDebugLog('✓ 直接访问成功', 'success');
+                        return await response.text();
+                    }
+                    throw new Error(`HTTP ${response.status}`);
+                } catch (error) {
+                    lastError = error;
+                    addDebugLog(`✗ 直接访问失败: ${error.message}`, 'error');
+                }
+                
+                // 方法2：使用GitHub API
+                try {
+                    const apiUrl = url.replace('https://raw.githubusercontent.com/', 'https://api.github.com/repos/');
+                    const apiUrl2 = apiUrl.replace('/main/', '/contents/');
                     
-                    // 尝试从GitHub加载配置文件
-                    const response = await fetch(GITHUB_CONFIG.modelsJsonUrl, {
+                    addDebugLog(`尝试GitHub API: ${apiUrl2}`);
+                    const response = await fetch(apiUrl2, {
                         headers: {
-                            'Accept': 'application/json'
+                            'Accept': 'application/vnd.github.v3.raw'
                         }
                     });
                     
                     if (response.ok) {
-                        const config = await response.json();
-                        models = config.models || [];
-                        showToast(`从GitHub成功加载 ${models.length} 个模型`);
-                    } else {
-                        throw new Error('GitHub配置加载失败');
+                        const data = await response.text();
+                        addDebugLog('✓ GitHub API成功', 'success');
+                        return data;
+                    }
+                    throw new Error(`API HTTP ${response.status}`);
+                } catch (error) {
+                    lastError = error;
+                    addDebugLog(`✗ GitHub API失败: ${error.message}`, 'error');
+                }
+                
+                // 方法3：使用CORS代理
+                for (let i = 0; i < CORS_PROXIES.length; i++) {
+                    try {
+                        const proxyUrl = CORS_PROXIES[i] + encodeURIComponent(url);
+                        addDebugLog(`尝试CORS代理 ${i + 1}: ${proxyUrl.substring(0, 80)}...`);
+                        
+                        const response = await fetch(proxyUrl);
+                        if (response.ok) {
+                            const data = await response.text();
+                            addDebugLog(`✓ CORS代理 ${i + 1} 成功`, 'success');
+                            currentProxyIndex = i;
+                            return data;
+                        }
+                        throw new Error(`Proxy HTTP ${response.status}`);
+                    } catch (error) {
+                        lastError = error;
+                        addDebugLog(`✗ CORS代理 ${i + 1} 失败: ${error.message}`, 'error');
+                    }
+                }
+                
+                throw lastError;
+            }
+            
+            // 获取GitHub目录列表
+            async function getGitHubDirectory(user, repo, branch, path) {
+                try {
+                    const apiUrl = `https://api.github.com/repos/${user}/${repo}/contents/${path}?ref=${branch}`;
+                    addDebugLog(`获取目录列表: ${apiUrl}`);
+                    
+                    const response = await fetch(apiUrl);
+                    if (!response.ok) {
+                        throw new Error(`GitHub API返回 ${response.status}`);
                     }
                     
+                    const data = await response.json();
+                    return data.filter(item => 
+                        item.type === 'file' && 
+                        item.name.toLowerCase().endsWith('.glb')
+                    );
                 } catch (error) {
-                    console.warn('GitHub加载失败，使用备用模型:', error);
-                    showToast('使用备用模型数据', 'info');
-                    models = GITHUB_CONFIG.fallbackModels;
+                    addDebugLog(`✗ 获取目录列表失败: ${error.message}`, 'error');
+                    return [];
+                }
+            }
+            
+            // 从GitHub加载模型
+            async function loadModelsFromGitHub() {
+                const user = githubUserInput.value.trim();
+                const repo = githubRepoInput.value.trim();
+                const branch = githubBranchInput.value.trim() || 'main';
+                const folder = modelsFolderInput.value.trim() || 'models';
+                
+                if (!user || !repo) {
+                    showToast('请输入GitHub用户名和仓库名', 'error');
+                    return;
                 }
                 
-                // 如果没有加载到模型，使用内置示例
-                if (!models || models.length === 0) {
-                    models = [
-                        {
-                            name: "铝制机械零件",
-                            description: "展示铝金属光泽的3D模型",
-                            url: "https://modelviewer.dev/shared-assets/models/Astronaut.glb",
-                            thumbnail: "🔧",
-                            size: "1.8 MB"
-                        },
-                        {
-                            name: "工业铝结构",
-                            description: "现代工业铝结构设计",
-                            url: "https://modelviewer.dev/shared-assets/models/RobotExpressive.glb",
-                            thumbnail: "🏭",
-                            size: "2.3 MB"
+                loadingText.innerHTML = `
+                    <div style="margin-bottom: 10px;">正在从GitHub加载...</div>
+                    <div style="font-size: 0.9rem; opacity: 0.8;">
+                        仓库: ${user}/${repo}<br>
+                        分支: ${branch}<br>
+                        路径: ${folder}/
+                    </div>
+                `;
+                loadingOverlay.style.display = 'flex';
+                updateStatus('loading', '正在连接GitHub...');
+                
+                addDebugLog(`开始加载: ${user}/${repo}/${folder}/`);
+                
+                try {
+                    // 尝试读取models.json配置文件
+                    const modelsJsonUrl = `https://raw.githubusercontent.com/${user}/${repo}/${branch}/${folder}/models.json`;
+                    addDebugLog(`尝试加载配置文件: ${modelsJsonUrl}`);
+                    
+                    let modelsData;
+                    try {
+                        const configText = await fetchGitHubFile(modelsJsonUrl);
+                        modelsData = JSON.parse(configText);
+                        addDebugLog('✓ 配置文件解析成功', 'success');
+                    } catch (configError) {
+                        addDebugLog('✗ 配置文件不存在，尝试扫描目录', 'warning');
+                        
+                        // 扫描目录获取GLB文件
+                        const files = await getGitHubDirectory(user, repo, branch, folder);
+                        
+                        if (files.length === 0) {
+                            throw new Error('未找到GLB文件');
                         }
-                    ];
-                    showToast('使用演示模型', 'info');
+                        
+                        modelsData = {
+                            models: files.map(file => ({
+                                name: file.name.replace('.glb', '').replace('.GLB', ''),
+                                description: `从GitHub加载的模型: ${file.name}`,
+                                url: `https://raw.githubusercontent.com/${user}/${repo}/${branch}/${folder}/${file.name}`,
+                                thumbnail: '📦',
+                                size: formatFileSize(file.size)
+                            }))
+                        };
+                    }
+                    
+                    models = modelsData.models || [];
+                    
+                    if (models.length === 0) {
+                        throw new Error('没有找到可用的模型');
+                    }
+                    
+                    // 验证模型URL
+                    for (let i = 0; i < Math.min(models.length, 3); i++) {
+                        const model = models[i];
+                        addDebugLog(`验证模型: ${model.name}`);
+                        
+                        try {
+                            const testResponse = await fetch(model.url, { method: 'HEAD' });
+                            if (!testResponse.ok) {
+                                addDebugLog(`✗ 模型 ${model.name} 可能无法访问: HTTP ${testResponse.status}`, 'warning');
+                            } else {
+                                addDebugLog(`✓ 模型 ${model.name} 可访问`, 'success');
+                            }
+                        } catch (error) {
+                            addDebugLog(`✗ 模型 ${model.name} 验证失败: ${error.message}`, 'warning');
+                        }
+                    }
+                    
+                    updateStatus('connected', `已连接: ${models.length} 个模型`);
+                    showToast(`成功加载 ${models.length} 个模型`, 'success');
+                    
+                    // 更新UI
+                    modelCount.textContent = `${models.length} 个模型`;
+                    updateModelList();
+                    updateModelViewer();
+                    enableControls(true);
+                    
+                    if (models.length > 1) {
+                        startAutoPlay();
+                    }
+                    
+                    loadingOverlay.style.display = 'none';
+                    
+                } catch (error) {
+                    console.error('GitHub加载失败:', error);
+                    addDebugLog(`✗ 加载失败: ${error.message}`, 'error');
+                    
+                    updateStatus('error', `加载失败: ${error.message}`);
+                    showToast(`加载失败: ${error.message}`, 'error');
+                    
+                    // 使用示例模型作为后备
+                    useExampleModels();
                 }
+            }
+            
+            // 使用示例模型
+            function useExampleModels() {
+                addDebugLog('使用示例模型作为后备', 'warning');
                 
-                // 更新UI
+                models = [
+                    {
+                        name: "示例铝制零件",
+                        description: "演示铝金属材质效果",
+                        url: "https://modelviewer.dev/shared-assets/models/Astronaut.glb",
+                        thumbnail: "🔧",
+                        size: "2.3 MB"
+                    },
+                    {
+                        name: "铝结构模型",
+                        description: "展示铝金属光泽",
+                        url: "https://modelviewer.dev/shared-assets/models/RobotExpressive.glb",
+                        thumbnail: "🏗️",
+                        size: "1.8 MB"
+                    }
+                ];
+                
+                updateStatus('connected', `示例模式: ${models.length} 个模型`);
+                showToast('使用示例模型进行演示', 'info');
+                
+                modelCount.textContent = `${models.length} 个模型`;
                 updateModelList();
                 updateModelViewer();
+                enableControls(true);
                 
-                // 开始轮播
                 if (models.length > 1) {
                     startAutoPlay();
                 }
                 
                 loadingOverlay.style.display = 'none';
-                modelCount.textContent = `${models.length} 个模型`;
-                folderStats.textContent = `GitHub源: ${models.length} 个铝金属模型`;
+            }
+            
+            // 格式化文件大小
+            function formatFileSize(bytes) {
+                if (!bytes) return '未知大小';
+                const units = ['B', 'KB', 'MB', 'GB'];
+                let size = bytes;
+                let unitIndex = 0;
+                
+                while (size >= 1024 && unitIndex < units.length - 1) {
+                    size /= 1024;
+                    unitIndex++;
+                }
+                
+                return `${size.toFixed(1)} ${units[unitIndex]}`;
             }
             
             // 更新模型列表
@@ -1234,9 +1003,14 @@
                     item.className = `model-list-item ${index === currentIndex ? 'active' : ''}`;
                     item.innerHTML = `
                         <div class="model-icon">${model.thumbnail || '📦'}</div>
-                        <div class="model-list-info">
-                            <div class="model-list-name">${model.name}</div>
-                            <div class="model-list-desc">${model.description || '铝金属3D模型'}</div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 600; margin-bottom: 5px;">${model.name}</div>
+                            <div style="font-size: 0.9rem; color: var(--metal-secondary);">
+                                ${model.description || '铝金属3D模型'}
+                            </div>
+                            <div style="font-size: 0.8rem; color: var(--metal-accent); margin-top: 5px;">
+                                ${model.size || ''}
+                            </div>
                         </div>
                     `;
                     
@@ -1254,35 +1028,92 @@
             function updateModelViewer() {
                 if (models.length === 0) return;
                 
-                isLoading = true;
                 const currentModel = models[currentIndex];
                 
                 loadingText.textContent = `正在加载: ${currentModel.name}`;
                 loadingOverlay.style.display = 'flex';
                 
+                // 使用代理URL（如果需要）
+                let modelUrl = currentModel.url;
+                
+                // 如果是GitHub raw URL且之前使用了代理，则使用代理
+                if (modelUrl.includes('raw.githubusercontent.com') && currentProxyIndex >= 0) {
+                    modelUrl = CORS_PROXIES[currentProxyIndex] + encodeURIComponent(modelUrl);
+                    addDebugLog(`使用代理加载模型: ${modelUrl.substring(0, 100)}...`);
+                }
+                
                 // 设置模型源
-                modelViewer.src = currentModel.url;
+                modelViewer.src = modelUrl;
                 
                 // 更新标题和描述
                 modelTitle.textContent = currentModel.name;
-                modelDescription.textContent = currentModel.description || '铝金属3D模型展示';
-                modelIndex.textContent = `${currentIndex + 1} / ${models.length}`;
+                modelDescription.textContent = currentModel.description || '铝金属3D模型';
                 
-                // 模型加载完成后隐藏加载状态
-                modelViewer.addEventListener('load', function onLoad() {
-                    isLoading = false;
+                // 模型加载完成后隐藏加载状态并应用材质
+                const onLoad = () => {
                     loadingOverlay.style.display = 'none';
-                    
-                    // 应用铝金属材质
-                    setTimeout(() => {
-                        applyAluminumMaterial();
-                    }, 500);
+                    applyAluminumMaterial();
+                    addDebugLog(`✓ 模型加载成功: ${currentModel.name}`, 'success');
                     
                     modelViewer.removeEventListener('load', onLoad);
-                });
+                    modelViewer.removeEventListener('error', onError);
+                };
+                
+                const onError = (error) => {
+                    addDebugLog(`✗ 模型加载失败: ${currentModel.name}`, 'error');
+                    addDebugLog(`错误详情: ${error.detail || '未知错误'}`, 'error');
+                    
+                    // 尝试使用备用URL
+                    if (!modelUrl.includes('modelviewer.dev')) {
+                        showToast('模型加载失败，尝试备用方案', 'error');
+                        setTimeout(() => {
+                            modelViewer.src = "https://modelviewer.dev/shared-assets/models/Astronaut.glb";
+                        }, 1000);
+                    }
+                    
+                    modelViewer.removeEventListener('load', onLoad);
+                    modelViewer.removeEventListener('error', onError);
+                };
+                
+                modelViewer.addEventListener('load', onLoad);
+                modelViewer.addEventListener('error', onError);
                 
                 // 更新列表选中状态
                 updateModelList();
+            }
+            
+            // 应用铝金属材质
+            function applyAluminumMaterial() {
+                if (!modelViewer.model) return;
+                
+                const material = ALUMINUM_MATERIALS[currentMaterial];
+                
+                try {
+                    if (modelViewer.model && modelViewer.model.materials) {
+                        const materials = modelViewer.model.materials;
+                        
+                        for (let i = 0; i < materials.length; i++) {
+                            const mat = materials[i];
+                            
+                            mat.pbrMetallicRoughness.setBaseColorFactor(material.baseColor);
+                            mat.pbrMetallicRoughness.setMetallicFactor(material.metallic);
+                            mat.pbrMetallicRoughness.setRoughnessFactor(material.roughness);
+                            
+                            // 设置自发光模拟金属光泽
+                            mat.setEmissiveFactor([0.02, 0.02, 0.02]);
+                            mat.setEmissiveStrength(1.0);
+                        }
+                        
+                        // 更新显示值
+                        metallicValue.textContent = material.metallic.toFixed(2);
+                        roughnessValue.textContent = material.roughness.toFixed(2);
+                        
+                        addDebugLog(`✓ 应用材质: ${material.name}`, 'success');
+                    }
+                } catch (error) {
+                    console.warn('材质应用失败:', error);
+                    addDebugLog(`✗ 材质应用失败: ${error.message}`, 'error');
+                }
             }
             
             // 下一个模型
@@ -1311,7 +1142,7 @@
                     }, carouselDuration * 1000);
                     
                     playIcon.textContent = '⏸';
-                    playStatus.textContent = '播放中';
+                    isPlaying = true;
                 }
             }
             
@@ -1323,7 +1154,7 @@
                 }
                 
                 playIcon.textContent = '▶';
-                playStatus.textContent = '已暂停';
+                isPlaying = false;
             }
             
             // 切换播放状态
@@ -1344,87 +1175,111 @@
                 }
             }
             
+            // 更新材质显示
+            function updateMaterialDisplay() {
+                const material = ALUMINUM_MATERIALS[currentMaterial];
+                
+                // 更新按钮状态
+                materialButtons.forEach(btn => {
+                    btn.classList.toggle('active', btn.id === `${currentMaterial}-btn`);
+                });
+                
+                // 更新滑块值
+                metallicSlider.value = material.metallic;
+                roughnessSlider.value = material.roughness;
+                
+                metallicValue.textContent = material.metallic.toFixed(2);
+                roughnessValue.textContent = material.roughness.toFixed(2);
+                
+                // 应用材质
+                applyAluminumMaterial();
+                
+                showToast(`已切换至${material.name}材质`);
+            }
+            
             // 更新轮播时长
             function updateDurationDisplay() {
-                durationDisplay.textContent = `${carouselDuration}秒`;
-                durationValue.textContent = `${carouselDuration}s`;
+                durationValue.textContent = `${carouselDuration}秒`;
                 
-                // 如果正在播放，重新开始轮播
                 if (isPlaying) {
                     startAutoPlay();
                 }
             }
             
             // 事件监听
+            loadGithubBtn.addEventListener('click', loadModelsFromGitHub);
+            
             prevBtn.addEventListener('click', prevModel);
             nextBtn.addEventListener('click', nextModel);
             togglePlayBtn.addEventListener('click', togglePlay);
             
             // 材质按钮事件
             materialButtons.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    currentMaterial = btn.dataset.material;
+                btn.addEventListener('click', function() {
+                    if (btn.disabled) return;
+                    
+                    currentMaterial = btn.id.replace('-btn', '');
                     updateMaterialDisplay();
                 });
             });
             
             // 滑块事件
-            metallicSlider.addEventListener('input', () => {
-                metallicValue.textContent = parseFloat(metallicSlider.value).toFixed(2);
+            metallicSlider.addEventListener('input', function() {
+                if (this.disabled) return;
+                
+                metallicValue.textContent = parseFloat(this.value).toFixed(2);
+                ALUMINUM_MATERIALS[currentMaterial].metallic = parseFloat(this.value);
                 applyAluminumMaterial();
             });
             
-            roughnessSlider.addEventListener('input', () => {
-                roughnessValue.textContent = parseFloat(roughnessSlider.value).toFixed(2);
+            roughnessSlider.addEventListener('input', function() {
+                if (this.disabled) return;
+                
+                roughnessValue.textContent = parseFloat(this.value).toFixed(2);
+                ALUMINUM_MATERIALS[currentMaterial].roughness = parseFloat(this.value);
                 applyAluminumMaterial();
             });
             
-            oxidationSlider.addEventListener('input', () => {
-                oxidationValue.textContent = parseFloat(oxidationSlider.value).toFixed(2);
-                applyAluminumMaterial();
-            });
-            
-            // 轮播控制事件
-            durationSlider.addEventListener('input', () => {
-                carouselDuration = parseInt(durationSlider.value);
+            durationSlider.addEventListener('input', function() {
+                if (this.disabled) return;
+                
+                carouselDuration = parseInt(this.value);
                 updateDurationDisplay();
-            });
-            
-            // 预设按钮事件
-            presetButtons.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    carouselDuration = parseInt(btn.dataset.duration);
-                    durationSlider.value = carouselDuration;
-                    updateDurationDisplay();
-                    
-                    presetButtons.forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    
-                    showToast(`轮播间隔设置为${carouselDuration}秒`);
-                });
             });
             
             // 键盘控制
             document.addEventListener('keydown', (event) => {
-                if (event.key === 'ArrowLeft') {
+                if (event.key === 'ArrowLeft' && !prevBtn.disabled) {
                     event.preventDefault();
                     prevModel();
-                } else if (event.key === 'ArrowRight') {
+                } else if (event.key === 'ArrowRight' && !nextBtn.disabled) {
                     event.preventDefault();
                     nextModel();
-                } else if (event.key === ' ') {
+                } else if (event.key === ' ' && !togglePlayBtn.disabled) {
                     event.preventDefault();
                     togglePlay();
                 }
             });
             
             // 初始化
-            loadModelsFromGitHub();
+            addDebugLog('✓ 页面初始化完成', 'success');
+            showToast('请配置您的GitHub仓库信息');
             
-            // 显示初始提示
-            setTimeout(() => {
-                showToast('铝金属光泽渲染器已就绪');
-            }, 1000);
+            // 自动尝试加载示例配置（如果URL中有参数）
+            const urlParams = new URLSearchParams(window.location.search);
+            const autoUser = urlParams.get('user');
+            const autoRepo = urlParams.get('repo');
+            
+            if (autoUser && autoRepo) {
+                githubUserInput.value = autoUser;
+                githubRepoInput.value = autoRepo;
+                
+                // 延迟加载，让用户看到发生了什么
+                setTimeout(() => {
+                    addDebugLog(`自动加载配置: ${autoUser}/${autoRepo}`);
+                    loadModelsFromGitHub();
+                }, 1000);
+            }
         });
     </script>
 </body>
