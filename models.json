@@ -1,0 +1,18 @@
+
+"models":[
+{
+    "name": "型材上侧垂直三通",
+    "description": "W*H=100*100,T=3.0",
+    "url": "https://raw.githubusercontent.com/Wellingguu/zzly3D/3Dmodel/型材上侧垂直三通OfficeEdit.glb",
+    "thumbnail": "丄",
+    "size": "3M",
+    "category": "分类"
+  ,
+      "name": "型材上垂直平三通",
+    "description": "W*H=100*100,T=3.0",
+    "url": "https://raw.githubusercontent.com/Wellingguu/zzly3D/3Dmodel/型材上垂直平三通OfficeEdit.glb",
+    "thumbnail": "丄",
+    "size": "3M",
+    "category": "分类"
+}
+]
