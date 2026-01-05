@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub托管的铝金属光泽3D轮播</title>
+    <style>
+        :root {
+            --metal-primary: #e8e8e8;
+            --metal-secondary: #c0c0c0;
+            --metal-accent: #a0a0a0;
+            --metal-dark: #2a2a2a;
+            --metal-light: #f5f5f5;
+            --aluminum-color: #cccccc;
+            --oxidized-color: #a8a8a8;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #2a2a2a 100%);
+            color: var(--metal-light);
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 35px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 25px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.6),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(200, 200, 200, 0.3), 
+                transparent
+            );
+        }
+        
+        h1 {
+            font-size: 3.2rem;
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, 
+                var(--metal-primary) 0%, 
+                var(--metal-secondary) 50%, 
+                var(--metal-primary) 100%
+            );
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(200, 200, 200, 0.2);
+            letter-spacing: 1px;
+            position: relative;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 25%;
+            width: 50%;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                var(--metal-primary), 
+                transparent
+            );
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            color: var(--metal-secondary);
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.7;
+            opacity: 0.9;
+        }
+        
+        .github-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px 20px;
+            border-radius: 30px;
+            margin-top: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.95rem;
+        }
+        
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 420px;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        @media (max-width: 1200px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .viewer-section {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            height: 650px;
+            border-radius: 20px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.7),
+                0 0 100px rgba(200, 200, 200, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        #model-viewer {
+            width: 100%;
+            height: 100%;
+            --poster-color: transparent;
+            --progress-bar-color: rgba(200, 200, 200, 0.5);
+            --progress-bar-height: 3px;
+            --progress-mask: linear-gradient(
+                rgba(255, 255, 255, 0.1),
+                rgba(255, 255, 255, 0.1)
+            );
+        }
+        
+        .model-info {
+            padding: 30px;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.03) 0%,
+                rgba(255, 255, 255, 0.01) 100%
+            );
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+        }
+        
+        .model-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .model-title {
+            font-size: 2.2rem;
+            color: var(--metal-light);
+            font-weight: 600;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+        
+        .model-index {
+            font-size: 1.1rem;
+            color: var(--metal-secondary);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .model-description {
+            color: var(--metal-secondary);
+            font-size: 1.1rem;
+            line-height: 1.7;
+            opacity: 0.9;
+        }
+        
+        .carousel-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            padding: 30px;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.03) 0%,
+                rgba(255, 255, 255, 0.01) 100%
+            );
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        .metal-btn {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.08) 0%,
+                rgba(255, 255, 255, 0.03) 100%
+            );
+            color: var(--metal-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .metal-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.1), 
+                transparent
+            );
+            transition: left 0.5s ease;
+        }
+        
+        .metal-btn:hover {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.12) 0%,
+                rgba(255, 255, 255, 0.06) 100%
+            );
+            transform: scale(1.1);
+            color: var(--metal-light);
+            box-shadow: 
+                0 10px 25px rgba(0, 0, 0, 0.3),
+                0 0 20px rgba(200, 200, 200, 0.1);
+        }
+        
+        .metal-btn:hover::before {
+            left: 100%;
+        }
+        
+        .play-pause-btn {
+            width: 85px;
+            height: 85px;
+            font-size: 2.3rem;
+            background: linear-gradient(135deg, 
+                var(--aluminum-color) 0%,
+                var(--oxidized-color) 100%
+            );
+            color: #1a1a1a;
+            border: none;
+            box-shadow: 0 10px 30px rgba(200, 200, 200, 0.2);
+        }
+        
+        .control-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .control-panel {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.03) 0%,
+                rgba(255, 255, 255, 0.01) 100%
+            );
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+        }
+        
+        .panel-title {
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            color: var(--metal-primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .panel-title .icon {
+            color: var(--aluminum-color);
+            font-size: 1.8rem;
+        }
+        
+        .material-controls {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .material-btn {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.05) 0%,
+                rgba(255, 255, 255, 0.02) 100%
+            );
+            color: var(--metal-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 18px 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 500;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .material-btn:hover {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.08) 0%,
+                rgba(255, 255, 255, 0.04) 100%
+            );
+            color: var(--metal-light);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+        
+        .material-btn.active {
+            background: linear-gradient(135deg, 
+                var(--aluminum-color) 0%,
+                var(--oxidized-color) 100%
+            );
+            color: #1a1a1a;
+            border-color: var(--metal-primary);
+            box-shadow: 0 5px 20px rgba(200, 200, 200, 0.2);
+        }
+        
+        .material-icon {
+            font-size: 1.8rem;
+            opacity: 0.9;
+        }
+        
+        .slider-group {
+            margin-bottom: 25px;
+        }
+        
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .slider-label {
+            color: var(--metal-secondary);
+            font-size: 1.1rem;
+        }
+        
+        .slider-value {
+            color: var(--metal-primary);
+            font-weight: 600;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 6px 12px;
+            border-radius: 15px;
+            min-width: 60px;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .slider {
+            width: 100%;
+            height: 8px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: linear-gradient(90deg, 
+                rgba(255, 255, 255, 0.1) 0%,
+                rgba(255, 255, 255, 0.2) 100%
+            );
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, 
+                var(--metal-primary) 0%,
+                var(--metal-secondary) 100%
+            );
+            cursor: pointer;
+            box-shadow: 
+                0 0 15px rgba(200, 200, 200, 0.5),
+                0 0 30px rgba(200, 200, 200, 0.3);
+            border: 2px solid #1a1a1a;
+        }
+        
+        .model-list-container {
+            flex: 1;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.03) 0%,
+                rgba(255, 255, 255, 0.01) 100%
+            );
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+        }
+        
+        .model-list-header {
+            padding: 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .model-list-title {
+            font-size: 1.4rem;
+            color: var(--metal-primary);
+        }
+        
+        .model-count {
+            background: linear-gradient(135deg, 
+                var(--aluminum-color) 0%,
+                var(--oxidized-color) 100%
+            );
+            color: #1a1a1a;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        
+        .model-list {
+            height: 400px;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        .model-list-item {
+            padding: 20px;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.03) 0%,
+                rgba(255, 255, 255, 0.01) 100%
+            );
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .model-list-item:hover {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.06) 0%,
+                rgba(255, 255, 255, 0.03) 100%
+            );
+            transform: translateX(5px);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+        
+        .model-list-item.active {
+            background: linear-gradient(135deg, 
+                rgba(200, 200, 200, 0.15) 0%,
+                rgba(200, 200, 200, 0.08) 100%
+            );
+            border-color: var(--aluminum-color);
+            box-shadow: 0 5px 20px rgba(200, 200, 200, 0.1);
+        }
+        
+        .model-icon {
+            font-size: 2rem;
+            color: var(--aluminum-color);
+            opacity: 0.9;
+        }
+        
+        .model-list-info {
+            flex: 1;
+        }
+        
+        .model-list-name {
+            font-weight: 600;
+            color: var(--metal-light);
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+        
+        .model-list-desc {
+            font-size: 0.95rem;
+            color: var(--metal-secondary);
+            line-height: 1.5;
+            opacity: 0.8;
+        }
+        
+        .duration-control {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.03) 0%,
+                rgba(255, 255, 255, 0.01) 100%
+            );
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+        }
+        
+        .duration-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .duration-title {
+            font-size: 1.5rem;
+            color: var(--metal-primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .duration-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--aluminum-color);
+            text-shadow: 0 0 20px rgba(200, 200, 200, 0.3);
+            font-family: 'Courier New', monospace;
+        }
+        
+        .duration-presets {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+        
+        .preset-btn {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.05) 0%,
+                rgba(255, 255, 255, 0.02) 100%
+            );
+            color: var(--metal-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 5px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 0.95rem;
+        }
+        
+        .preset-btn:hover {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.08) 0%,
+                rgba(255, 255, 255, 0.04) 100%
+            );
+            color: var(--metal-light);
+        }
+        
+        .preset-btn.active {
+            background: linear-gradient(135deg, 
+                var(--aluminum-color) 0%,
+                var(--oxidized-color) 100%
+            );
+            color: #1a1a1a;
+            border-color: var(--metal-primary);
+            box-shadow: 0 5px 15px rgba(200, 200, 200, 0.2);
+        }
+        
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(26, 26, 26, 0.95) 0%,
+                rgba(10, 10, 10, 0.95) 100%
+            );
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: opacity 0.5s ease;
+        }
+        
+        .metal-loader {
+            width: 100px;
+            height: 100px;
+            position: relative;
+            margin-bottom: 30px;
+        }
+        
+        .metal-loader-inner {
+            width: 100%;
+            height: 100%;
+            border: 8px solid transparent;
+            border-top: 8px solid var(--aluminum-color);
+            border-right: 8px solid var(--oxidized-color);
+            border-radius: 50%;
+            animation: metalSpin 2s linear infinite;
+        }
+        
+        @keyframes metalSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .github-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.05) 0%,
+                rgba(255, 255, 255, 0.02) 100%
+            );
+            color: var(--metal-secondary);
+            padding: 15px 25px;
+            border-radius: 15px;
+            text-decoration: none;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            margin-top: 30px;
+            font-weight: 500;
+        }
+        
+        .github-link:hover {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.08) 0%,
+                rgba(255, 255, 255, 0.04) 100%
+            );
+            color: var(--metal-light);
+            transform: translateY(-3px);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, 
+                var(--aluminum-color) 0%,
+                var(--oxidized-color) 100%
+            );
+            color: #1a1a1a;
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.4),
+                0 0 30px rgba(200, 200, 200, 0.1);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            z-index: 1000;
+            max-width: 400px;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .status-bar {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.03) 0%,
+                rgba(255, 255, 255, 0.01) 100%
+            );
+            border-radius: 15px;
+            padding: 20px 30px;
+            margin-top: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.95rem;
+        }
+        
+        .status-info {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+        
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .status-label {
+            color: var(--metal-secondary);
+        }
+        
+        .status-value {
+            color: var(--metal-primary);
+            font-weight: 600;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 5px 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .carousel-container {
+                height: 400px;
+            }
+            
+            .material-controls {
+                grid-template-columns: 1fr;
+            }
+            
+            .duration-presets {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .model-list {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>GitHub铝金属光泽3D轮播</h1>
+            <p class="subtitle">直接从GitHub加载GLB模型，应用PBR铝金属材质，支持自定义金属光泽和氧化效果</p>
+            
+            <div class="github-badge">
+                <span>🚀 GitHub托管 | ⚡ 实时渲染 | 🎨 PBR材质 | 🔄 自动轮播</span>
+            </div>
+        </header>
+        
+        <div class="content-grid">
+            <div class="viewer-section">
+                <div class="carousel-container">
+                    <div class="loading-overlay" id="loading-overlay">
+                        <div class="metal-loader">
+                            <div class="metal-loader-inner"></div>
+                        </div>
+                        <div id="loading-text" style="color: var(--metal-secondary); font-size: 1.3rem; text-align: center; max-width: 500px;">
+                            正在从GitHub加载铝金属模型...
+                            <br>
+                            <small style="opacity: 0.7; font-size: 1rem;">首次加载可能需要几秒钟</small>
+                        </div>
+                    </div>
+                    <model-viewer 
+                        id="model-viewer"
+                        camera-controls
+                        auto-rotate
+                        autoplay
+                        shadow-intensity="1.5"
+                        exposure="1.2"
+                        environment-image="https://modelviewer.dev/shared-assets/environments/spruit_sunrise_1k_HDR.hdr"
+                        skybox-image="https://modelviewer.dev/shared-assets/environments/spruit_sunrise_1k_HDR.hdr"
+                        style="width:100%;height:100%">
+                    </model-viewer>
+                </div>
+                
+                <div class="model-info">
+                    <div class="model-header">
+                        <div class="model-title" id="model-title">铝金属模型展示</div>
+                        <div class="model-index" id="model-index">0 / 0</div>
+                    </div>
+                    <div class="model-description" id="model-description">
+                        选择左侧材质或调整下方参数来改变铝金属的光泽和氧化效果
+                    </div>
+                </div>
+                
+                <div class="carousel-controls">
+                    <button class="metal-btn" id="prev-btn" title="上一个模型 (左箭头)">
+                        ◀
+                    </button>
+                    <button class="metal-btn play-pause-btn" id="toggle-play" title="播放/暂停轮播 (空格键)">
+                        <span id="play-icon">⏸</span>
+                    </button>
+                    <button class="metal-btn" id="next-btn" title="下一个模型 (右箭头)">
+                        ▶
+                    </button>
+                </div>
+            </div>
+            
+            <div class="control-sidebar">
+                <div class="control-panel">
+                    <div class="panel-title">
+                        <span class="icon">🔩</span>
+                        <span>铝金属材质</span>
+                    </div>
+                    
+                    <div class="material-controls">
+                        <button class="material-btn active" id="aluminum-btn" data-material="aluminum">
+                            <span class="material-icon">✨</span>
+                            <span>纯铝</span>
+                        </button>
+                        <button class="material-btn" id="oxidized-btn" data-material="oxidized">
+                            <span class="material-icon">🌫</span>
+                            <span>氧化铝</span>
+                        </button>
+                        <button class="material-btn" id="anodized-btn" data-material="anodized">
+                            <span class="material-icon">🌈</span>
+                            <span>阳极氧化</span>
+                        </button>
+                        <button class="material-btn" id="brushed-btn" data-material="brushed">
+                            <span class="material-icon">🌀</span>
+                            <span>拉丝铝</span>
+                        </button>
+                    </div>
+                    
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <div class="slider-label">金属度</div>
+                            <div class="slider-value" id="metallic-value">0.95</div>
+                        </div>
+                        <input type="range" min="0" max="1" step="0.01" value="0.95" class="slider" id="metallic-slider">
+                    </div>
+                    
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <div class="slider-label">粗糙度</div>
+                            <div class="slider-value" id="roughness-value">0.15</div>
+                        </div>
+                        <input type="range" min="0" max="1" step="0.01" value="0.15" class="slider" id="roughness-slider">
+                    </div>
+                    
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <div class="slider-label">氧化程度</div>
+                            <div class="slider-value" id="oxidation-value">0.0</div>
+                        </div>
+                        <input type="range" min="0" max="1" step="0.01" value="0.0" class="slider" id="oxidation-slider">
+                    </div>
+                </div>
+                
+                <div class="model-list-container">
+                    <div class="model-list-header">
+                        <div class="model-list-title">GitHub模型库</div>
+                        <div class="model-count" id="model-count">0 个模型</div>
+                    </div>
+                    
+                    <div class="model-list" id="model-list">
+                        <!-- 模型列表将在这里动态生成 -->
+                        <div class="model-list-item">
+                            <div class="model-icon">📦</div>
+                            <div class="model-list-info">
+                                <div class="model-list-name">正在加载模型...</div>
+                                <div class="model-list-desc">请稍候</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="duration-control">
+                    <div class="duration-header">
+                        <div class="duration-title">
+                            <span class="icon">⏱</span>
+                            <span>轮播控制</span>
+                        </div>
+                        <div class="duration-value" id="duration-value">10s</div>
+                    </div>
+                    
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <div class="slider-label">轮播间隔</div>
+                            <div class="slider-value" id="duration-display">10秒</div>
+                        </div>
+                        <input type="range" min="3" max="60" value="10" class="slider" id="duration-slider">
+                    </div>
+                    
+                    <div class="duration-presets">
+                        <button class="preset-btn active" data-duration="5">5秒</button>
+                        <button class="preset-btn" data-duration="10">10秒</button>
+                        <button class="preset-btn" data-duration="15">15秒</button>
+                        <button class="preset-btn" data-duration="30">30秒</button>
+                    </div>
+                </div>
+                
+                <a href="https://github.com" target="_blank" class="github-link">
+                    <span>访问GitHub仓库</span>
+                    <span>→</span>
+                </a>
+            </div>
+        </div>
+        
+        <div class="status-bar">
+            <div class="status-info">
+                <div class="status-item">
+                    <span class="status-label">当前材质:</span>
+                    <span class="status-value" id="current-material">纯铝</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">轮播状态:</span>
+                    <span class="status-value" id="play-status">播放中</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">数据源:</span>
+                    <span class="status-value">GitHub</span>
+                </div>
+            </div>
+            <div id="folder-stats">等待加载模型数据...</div>
+        </div>
+    </div>
+    
+    <div class="toast" id="toast">铝金属光泽渲染器已就绪</div>
+    
+    <!-- 配置文件示例链接 -->
+    <div id="config-example" style="display: none;">
+        <!-- 这里放置配置示例 -->
+    </div>
+    
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    <script>
+        // 铝金属材质配置
+        const ALUMINUM_MATERIALS = {
+            aluminum: {
+                name: "纯铝",
+                metallic: 0.95,
+                roughness: 0.15,
+                baseColor: "#E8E8E8",
+                emissiveFactor: [0.02, 0.02, 0.02],
+                emissiveStrength: 1.0,
+                clearcoat: 0.3,
+                clearcoatRoughness: 0.1
+            },
+            oxidized: {
+                name: "氧化铝",
+                metallic: 0.85,
+                roughness: 0.45,
+                baseColor: "#C8C8C8",
+                emissiveFactor: [0.05, 0.05, 0.05],
+                emissiveStrength: 1.1,
+                clearcoat: 0.5,
+                clearcoatRoughness: 0.3
+            },
+            anodized: {
+                name: "阳极氧化铝",
+                metallic: 0.75,
+                roughness: 0.35,
+                baseColor: "#3A6EA5",
+                emissiveFactor: [0.02, 0.02, 0.05],
+                emissiveStrength: 1.2,
+                clearcoat: 0.8,
+                clearcoatRoughness: 0.2
+            },
+            brushed: {
+                name: "拉丝铝",
+                metallic: 0.9,
+                roughness: 0.25,
+                baseColor: "#D0D0D0",
+                emissiveFactor: [0.03, 0.03, 0.03],
+                emissiveStrength: 1.0,
+                clearcoat: 0.4,
+                clearcoatRoughness: 0.15
+            }
+        };
+
+        // GitHub仓库配置 - 请替换为您的实际仓库信息
+        const GITHUB_CONFIG = {
+            // 示例：GitHub原始文件URL (Raw URL)
+            owner: "your-username",
+            repo: "3d-models-repo",
+            branch: "main",
+            
+            // 或者直接使用完整的raw URL
+            modelsJsonUrl: "https://raw.githubusercontent.com/your-username/3d-models-repo/main/models.json",
+            
+            // 备用配置源（防止主配置源不可用）
+            fallbackModels: [
+                {
+                    name: "铝制零件示例",
+                    description: "工业铝制零件模型",
+                    url: "https://raw.githubusercontent.com/your-username/3d-models-repo/main/models/aluminum_part.glb",
+                    thumbnail: "🔩",
+                    size: "2.1 MB",
+                    category: "industrial"
+                },
+                {
+                    name: "铝框架结构",
+                    description: "建筑铝框架模型",
+                    url: "https://raw.githubusercontent.com/your-username/3d-models-repo/main/models/aluminum_frame.glb",
+                    thumbnail: "🏗️",
+                    size: "3.4 MB",
+                    category: "architecture"
+                }
+            ]
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取DOM元素
+            const modelViewer = document.getElementById('model-viewer');
+            const loadingOverlay = document.getElementById('loading-overlay');
+            const loadingText = document.getElementById('loading-text');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const togglePlayBtn = document.getElementById('toggle-play');
+            const playIcon = document.getElementById('play-icon');
+            const modelTitle = document.getElementById('model-title');
+            const modelIndex = document.getElementById('model-index');
+            const modelDescription = document.getElementById('model-description');
+            const modelCount = document.getElementById('model-count');
+            const modelList = document.getElementById('model-list');
+            const folderStats = document.getElementById('folder-stats');
+            const toast = document.getElementById('toast');
+            
+            // 材质控制元素
+            const materialButtons = document.querySelectorAll('.material-btn');
+            const metallicSlider = document.getElementById('metallic-slider');
+            const metallicValue = document.getElementById('metallic-value');
+            const roughnessSlider = document.getElementById('roughness-slider');
+            const roughnessValue = document.getElementById('roughness-value');
+            const oxidationSlider = document.getElementById('oxidation-slider');
+            const oxidationValue = document.getElementById('oxidation-value');
+            const currentMaterialDisplay = document.getElementById('current-material');
+            
+            // 轮播控制元素
+            const durationSlider = document.getElementById('duration-slider');
+            const durationDisplay = document.getElementById('duration-display');
+            const durationValue = document.getElementById('duration-value');
+            const presetButtons = document.querySelectorAll('.preset-btn');
+            const playStatus = document.getElementById('play-status');
+            
+            // 程序状态
+            let models = [];
+            let currentIndex = 0;
+            let isPlaying = true;
+            let playInterval = null;
+            let currentMaterial = 'aluminum';
+            let carouselDuration = 10;
+            let isLoading = false;
+            
+            // 显示提示消息
+            function showToast(message) {
+                toast.textContent = message;
+                toast.classList.add('show');
+                
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+            
+            // 更新材质显示
+            function updateMaterialDisplay() {
+                const material = ALUMINUM_MATERIALS[currentMaterial];
+                currentMaterialDisplay.textContent = material.name;
+                
+                // 更新按钮状态
+                materialButtons.forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.material === currentMaterial);
+                });
+                
+                // 更新滑块值
+                metallicSlider.value = material.metallic;
+                roughnessSlider.value = material.roughness;
+                oxidationSlider.value = 0; // 重置氧化程度
+                
+                metallicValue.textContent = material.metallic.toFixed(2);
+                roughnessValue.textContent = material.roughness.toFixed(2);
+                oxidationValue.textContent = '0.00';
+                
+                // 应用材质
+                applyAluminumMaterial();
+                
+                showToast(`已切换至${material.name}材质`);
+            }
+            
+            // 应用铝金属材质
+            function applyAluminumMaterial() {
+                if (!modelViewer.model || isLoading) return;
+                
+                const materialConfig = ALUMINUM_MATERIALS[currentMaterial];
+                const oxidation = parseFloat(oxidationSlider.value);
+                
+                try {
+                    // 计算氧化效果对材质的影响
+                    const adjustedMetallic = materialConfig.metallic * (1 - oxidation * 0.4);
+                    const adjustedRoughness = materialConfig.roughness + (oxidation * 0.3);
+                    
+                    // 创建新的材质配置
+                    const materialData = {
+                        pbrMetallicRoughness: {
+                            baseColorFactor: materialConfig.baseColor,
+                            metallicFactor: adjustedMetallic,
+                            roughnessFactor: adjustedRoughness
+                        },
+                        emissiveFactor: materialConfig.emissiveFactor,
+                        emissiveStrength: materialConfig.emissiveStrength * (1 + oxidation * 0.3),
+                        doubleSided: true
+                    };
+                    
+                    // 如果有clearcoat属性，添加它
+                    if (materialConfig.clearcoat !== undefined) {
+                        materialData.extensions = {
+                            KHR_materials_clearcoat: {
+                                clearcoatFactor: materialConfig.clearcoat,
+                                clearcoatRoughnessFactor: materialConfig.clearcoatRoughness
+                            }
+                        };
+                    }
+                    
+                    // 尝试设置材质
+                    if (modelViewer.model && modelViewer.model.materials) {
+                        const materials = modelViewer.model.materials;
+                        
+                        for (let i = 0; i < materials.length; i++) {
+                            const mat = materials[i];
+                            
+                            // 设置基础材质属性
+                            mat.pbrMetallicRoughness.setBaseColorFactor(materialConfig.baseColor);
+                            mat.pbrMetallicRoughness.setMetallicFactor(adjustedMetallic);
+                            mat.pbrMetallicRoughness.setRoughnessFactor(adjustedRoughness);
+                            
+                            // 设置自发光
+                            mat.setEmissiveFactor(materialConfig.emissiveFactor);
+                            mat.setEmissiveStrength(materialConfig.emissiveStrength * (1 + oxidation * 0.3));
+                            
+                            // 更新显示值
+                            metallicValue.textContent = adjustedMetallic.toFixed(2);
+                            roughnessValue.textContent = adjustedRoughness.toFixed(2);
+                        }
+                    }
+                } catch (error) {
+                    console.warn('材质应用失败，使用备用方法:', error);
+                    // 使用CSS自定义属性作为备用
+                    modelViewer.style.setProperty('--material-color', materialConfig.baseColor);
+                }
+            }
+            
+            // 从GitHub加载模型配置
+            async function loadModelsFromGitHub() {
+                try {
+                    loadingText.textContent = '正在从GitHub加载模型配置...';
+                    loadingOverlay.style.display = 'flex';
+                    
+                    // 尝试从GitHub加载配置文件
+                    const response = await fetch(GITHUB_CONFIG.modelsJsonUrl, {
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const config = await response.json();
+                        models = config.models || [];
+                        showToast(`从GitHub成功加载 ${models.length} 个模型`);
+                    } else {
+                        throw new Error('GitHub配置加载失败');
+                    }
+                    
+                } catch (error) {
+                    console.warn('GitHub加载失败，使用备用模型:', error);
+                    showToast('使用备用模型数据', 'info');
+                    models = GITHUB_CONFIG.fallbackModels;
+                }
+                
+                // 如果没有加载到模型，使用内置示例
+                if (!models || models.length === 0) {
+                    models = [
+                        {
+                            name: "铝制机械零件",
+                            description: "展示铝金属光泽的3D模型",
+                            url: "https://modelviewer.dev/shared-assets/models/Astronaut.glb",
+                            thumbnail: "🔧",
+                            size: "1.8 MB"
+                        },
+                        {
+                            name: "工业铝结构",
+                            description: "现代工业铝结构设计",
+                            url: "https://modelviewer.dev/shared-assets/models/RobotExpressive.glb",
+                            thumbnail: "🏭",
+                            size: "2.3 MB"
+                        }
+                    ];
+                    showToast('使用演示模型', 'info');
+                }
+                
+                // 更新UI
+                updateModelList();
+                updateModelViewer();
+                
+                // 开始轮播
+                if (models.length > 1) {
+                    startAutoPlay();
+                }
+                
+                loadingOverlay.style.display = 'none';
+                modelCount.textContent = `${models.length} 个模型`;
+                folderStats.textContent = `GitHub源: ${models.length} 个铝金属模型`;
+            }
+            
+            // 更新模型列表
+            function updateModelList() {
+                modelList.innerHTML = '';
+                
+                models.forEach((model, index) => {
+                    const item = document.createElement('div');
+                    item.className = `model-list-item ${index === currentIndex ? 'active' : ''}`;
+                    item.innerHTML = `
+                        <div class="model-icon">${model.thumbnail || '📦'}</div>
+                        <div class="model-list-info">
+                            <div class="model-list-name">${model.name}</div>
+                            <div class="model-list-desc">${model.description || '铝金属3D模型'}</div>
+                        </div>
+                    `;
+                    
+                    item.addEventListener('click', () => {
+                        currentIndex = index;
+                        updateModelViewer();
+                        updateModelList();
+                    });
+                    
+                    modelList.appendChild(item);
+                });
+            }
+            
+            // 更新模型查看器
+            function updateModelViewer() {
+                if (models.length === 0) return;
+                
+                isLoading = true;
+                const currentModel = models[currentIndex];
+                
+                loadingText.textContent = `正在加载: ${currentModel.name}`;
+                loadingOverlay.style.display = 'flex';
+                
+                // 设置模型源
+                modelViewer.src = currentModel.url;
+                
+                // 更新标题和描述
+                modelTitle.textContent = currentModel.name;
+                modelDescription.textContent = currentModel.description || '铝金属3D模型展示';
+                modelIndex.textContent = `${currentIndex + 1} / ${models.length}`;
+                
+                // 模型加载完成后隐藏加载状态
+                modelViewer.addEventListener('load', function onLoad() {
+                    isLoading = false;
+                    loadingOverlay.style.display = 'none';
+                    
+                    // 应用铝金属材质
+                    setTimeout(() => {
+                        applyAluminumMaterial();
+                    }, 500);
+                    
+                    modelViewer.removeEventListener('load', onLoad);
+                });
+                
+                // 更新列表选中状态
+                updateModelList();
+            }
+            
+            // 下一个模型
+            function nextModel() {
+                if (models.length === 0) return;
+                
+                currentIndex = (currentIndex + 1) % models.length;
+                updateModelViewer();
+            }
+            
+            // 上一个模型
+            function prevModel() {
+                if (models.length === 0) return;
+                
+                currentIndex = (currentIndex - 1 + models.length) % models.length;
+                updateModelViewer();
+            }
+            
+            // 开始自动轮播
+            function startAutoPlay() {
+                if (playInterval) clearInterval(playInterval);
+                
+                if (isPlaying && models.length > 1) {
+                    playInterval = setInterval(() => {
+                        nextModel();
+                    }, carouselDuration * 1000);
+                    
+                    playIcon.textContent = '⏸';
+                    playStatus.textContent = '播放中';
+                }
+            }
+            
+            // 停止自动轮播
+            function stopAutoPlay() {
+                if (playInterval) {
+                    clearInterval(playInterval);
+                    playInterval = null;
+                }
+                
+                playIcon.textContent = '▶';
+                playStatus.textContent = '已暂停';
+            }
+            
+            // 切换播放状态
+            function togglePlay() {
+                if (models.length < 2) {
+                    showToast('需要至少2个模型才能轮播');
+                    return;
+                }
+                
+                isPlaying = !isPlaying;
+                
+                if (isPlaying) {
+                    startAutoPlay();
+                    showToast('轮播已开始');
+                } else {
+                    stopAutoPlay();
+                    showToast('轮播已暂停');
+                }
+            }
+            
+            // 更新轮播时长
+            function updateDurationDisplay() {
+                durationDisplay.textContent = `${carouselDuration}秒`;
+                durationValue.textContent = `${carouselDuration}s`;
+                
+                // 如果正在播放，重新开始轮播
+                if (isPlaying) {
+                    startAutoPlay();
+                }
+            }
+            
+            // 事件监听
+            prevBtn.addEventListener('click', prevModel);
+            nextBtn.addEventListener('click', nextModel);
+            togglePlayBtn.addEventListener('click', togglePlay);
+            
+            // 材质按钮事件
+            materialButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    currentMaterial = btn.dataset.material;
+                    updateMaterialDisplay();
+                });
+            });
+            
+            // 滑块事件
+            metallicSlider.addEventListener('input', () => {
+                metallicValue.textContent = parseFloat(metallicSlider.value).toFixed(2);
+                applyAluminumMaterial();
+            });
+            
+            roughnessSlider.addEventListener('input', () => {
+                roughnessValue.textContent = parseFloat(roughnessSlider.value).toFixed(2);
+                applyAluminumMaterial();
+            });
+            
+            oxidationSlider.addEventListener('input', () => {
+                oxidationValue.textContent = parseFloat(oxidationSlider.value).toFixed(2);
+                applyAluminumMaterial();
+            });
+            
+            // 轮播控制事件
+            durationSlider.addEventListener('input', () => {
+                carouselDuration = parseInt(durationSlider.value);
+                updateDurationDisplay();
+            });
+            
+            // 预设按钮事件
+            presetButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    carouselDuration = parseInt(btn.dataset.duration);
+                    durationSlider.value = carouselDuration;
+                    updateDurationDisplay();
+                    
+                    presetButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    showToast(`轮播间隔设置为${carouselDuration}秒`);
+                });
+            });
+            
+            // 键盘控制
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'ArrowLeft') {
+                    event.preventDefault();
+                    prevModel();
+                } else if (event.key === 'ArrowRight') {
+                    event.preventDefault();
+                    nextModel();
+                } else if (event.key === ' ') {
+                    event.preventDefault();
+                    togglePlay();
+                }
+            });
+            
+            // 初始化
+            loadModelsFromGitHub();
+            
+            // 显示初始提示
+            setTimeout(() => {
+                showToast('铝金属光泽渲染器已就绪');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
